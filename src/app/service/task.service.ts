@@ -15,4 +15,16 @@ export class TaskService {
   getAll(): Observable<Task[]> {
     return this.http.get<Task[]>(baseUrl);
   }
+
+  create(data: any): Observable<any> {
+    return this.http.post(baseUrl, data);
+  }
+
+  update(id: any, data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/${id}`, data);
+  }
+
+  delete(id: any): Observable<any> {
+    return this.http.delete(`${baseUrl}/${id}`);
+  }
 }

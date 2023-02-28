@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Task } from 'src/app/model/task.model';
 import { TaskService } from 'src/app/service/task.service';
 
@@ -9,6 +10,9 @@ import { TaskService } from 'src/app/service/task.service';
 })
 export class TaskComponent implements OnInit {
   tasks?: Task[];
+  editEmployee?: Task; //from Component to UI
+  deleteEmployee?: Task;
+
   constructor(private taskService: TaskService) { }
 
   ngOnInit(): void {
@@ -27,6 +31,46 @@ export class TaskComponent implements OnInit {
         });
   }
 
+  onAddEmloyee(addForm: NgForm): void {
+    document.getElementById('add-employee-form')?.click();
+    this.taskService.create(addForm.value)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.retrieveTasks();
+          addForm.reset();
+        },
+        error => {
+          console.log(error);
+          //addForm.reset();
+        });
+  }
+
+  onUpdateEmloyee(task: Task): void {
+    this.taskService.update(task?.id, task) //this.editEmployee?.id; currentEmp
+      .subscribe(
+        response => {
+          console.log(response);
+          this.retrieveTasks();
+          //this.message = response.message ? response.message : 'This task was updated successfully!';
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
+  onDeleteEmloyee(employeeId: any): void { //number
+    this.taskService.delete(employeeId)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.retrieveTasks();
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
   public onOpenModal(task: Task, mode: string): void { //CrUD, which modal to open
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -37,11 +81,11 @@ export class TaskComponent implements OnInit {
       button.setAttribute('data-target', '#addEmployeeModal'); //data-target -> id of the modal
     }
     if (mode === 'edit') {
-      //this.editEmployee = employee;
+      this.editEmployee = task;
       button.setAttribute('data-target', '#updateEmployeeModal');
     }
     if (mode === 'delete') {
-      //this.deleteEmployee = employee;
+      this.deleteEmployee = task;
       button.setAttribute('data-target', '#deleteEmployeeModal');
     }
     //if (container) {
