@@ -71,6 +71,22 @@ export class TaskComponent implements OnInit {
         });
   }
 
+  searchEmployees(key: string): void {
+    console.log(key);
+    const results: Task[] = [];
+    for (const employee of this.tasks!) {
+      if (employee.description!.toLowerCase().indexOf(key.toLowerCase()) !== -1
+        || employee.title!.toLowerCase().indexOf(key.toLowerCase()) !== -1
+      ) {
+        results.push(employee);
+      }
+    }
+    this.tasks = results;
+    if (results.length === 0 || !key) {
+      this.retrieveTasks();
+    }
+  }
+
   public onOpenModal(task: Task, mode: string): void { //CrUD, which modal to open
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
